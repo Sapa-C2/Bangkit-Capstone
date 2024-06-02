@@ -1,13 +1,10 @@
-// const express = require("express");
-// const router = express.Router();
-// const UserController = require('../controller/level.js');
+const express = require("express");
+const router = express.Router();
+const UserController = require('../controller/level.js');
 
-// router.get('/', UserController.getAllLevel);
+router.get('/', UserController.getAllLevel);
 
-// router.post('/', UserController.createNewLevel);
+router.get('/:level_id', UserController.getDetailLevel);
 
-// router.patch('/:idLevel', UserController.UpdateLevel);
 
-// router.delete('/:idLevel', UserController.DeleteLevel);
-
-// module.exports = router;
+module.exports = router;

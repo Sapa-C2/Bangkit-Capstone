@@ -12,7 +12,7 @@ app.use(MiddlewareLogsrequest);
 app.use(express.json());
 
 app.use('/users', usersRoutes);
-//app.use('/level', levelRoutes);
+app.use('/level', levelRoutes);
 //app.use('/unit', unitRoutes);
 
 
