@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 const usersRoutes = require('./routes/users.js');
 const levelRoutes = require('./routes/level.js');
+const stageRoutes = require("./routes/stage.js");
 const MiddlewareLogsrequest = require('./middleware/logs.js');
 
 
@@ -14,6 +15,8 @@ app.use(express.json());
 app.use('/users', usersRoutes);
 app.use('/level', levelRoutes);
 //app.use('/unit', unitRoutes);
+app.use("/stage", stageRoutes);
+
 
 
 app.get("/", (req, res) => {
