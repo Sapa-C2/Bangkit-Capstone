@@ -4,7 +4,7 @@ const getAllLevel = async(req, res) => {
     try {
         const [data]= await UserModel.getAllLevel();
         res.json({
-          message: 'Get All users succees',
+          message: 'Get All level succees',
           data: data
         })
     } catch (error) {
@@ -18,25 +18,36 @@ const getAllLevel = async(req, res) => {
 
 const getDetailLevel = async (req, res) => {
     const { level_id } = req.params;
+
     try {
         const [data] = await UserModel.getDetailLevel(level_id);
-        if (data.length === 0) {
+        if (!data) {
             return res.status(404).json({
-                message: 'not found',
-                serverMessage: `Level  ID ${level_id} tidak ditemukan`
+                message: 'Level not found',
+                serverMessage: `Level ID ${level_id} not found`
             });
         }
-        res.json({
+        const [unitsData] = await UserModel.getUnitsByLevelId(level_id);
+
+        const result = {
             message: 'Get Detail level success',
-            data: data
-        });
+            data: {
+                data,
+                unitsData,
+            }
+        };
+        res.json(result);
     } catch (error) {
+        console.error('Error:', error);
         res.status(500).json({
             message: 'Server Error',
-            serverMessage: error,
+            serverMessage: error.message,
         });
     }
 };
+
+
+
 
 module.exports = {
     getAllLevel,
