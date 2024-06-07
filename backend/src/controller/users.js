@@ -16,6 +16,28 @@ const getAllUsers = async(req, res) => {
  
 }
 
+const getDetailUsers = async (req, res) => {
+    const { idUser } = req.params;
+    try {
+        const [data] = await UserModel.getDetailUsers(idUser);
+        if (data.length === 0) {
+            return res.status(404).json({
+                message: 'not found',
+                serverMessage: `Unit  ID ${idUser} tidak ditemukan`
+            });
+        }
+        res.json({
+            message: 'Get Detail Users success',
+            data: data
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Server Error',
+            serverMessage: error,
+        });
+    }
+};
+
 const createNewUser = async(req, res) => {
     const {body} = req;
 
@@ -80,6 +102,7 @@ const DeleteUser = async(req, res) => {
 
 module.exports = {
     getAllUsers,
+    getDetailUsers,
     createNewUser,
     UpdateUser,
     DeleteUser,

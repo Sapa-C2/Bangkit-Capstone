@@ -6,5 +6,4 @@ const dbPool = mysql.createPool({
     password: 'yunus765',
     database: 'db_capstone',
 });
-
 module.exports = dbPool.promise();

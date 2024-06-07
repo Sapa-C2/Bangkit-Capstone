@@ -5,6 +5,10 @@ const getAllUsers = () => {
     return dbPool.execute(SQLQuery);
     
 }
+const getDetailUsers = (idUser) => {
+    const SQLQuery = 'SELECT * FROM users WHERE id = ?';
+    return dbPool.execute(SQLQuery, [idUser]);
+};
 
 const createNewUser = (body) => {
     const SQLQuery = `INSERT INTO users(name,password,email)
@@ -28,6 +32,7 @@ const DeleteUser = (idUser) => {
 
 module.exports = {
     getAllUsers,
+    getDetailUsers,
     createNewUser,
     UpdateUser,
     DeleteUser,
