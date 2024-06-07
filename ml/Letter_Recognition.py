@@ -4,7 +4,7 @@ from tensorflow.keras.models import load_model
 import mediapipe as mp
 
 # Load the trained model
-model = load_model('smnist_model.h5')
+model = load_model('smnist_model_augmented.h5')
 
 # Initialize MediaPipe Hands
 mp_hands = mp.solutions.hands
@@ -15,7 +15,7 @@ mp_drawing = mp.solutions.drawing_utils
 cap = cv2.VideoCapture(0)
 
 # Define the alphabet labels
-alphabet_labels = ['A', 'B', 'C', 'D', 'E']
+alphabet_labels = ['A', 'B', 'C', 'D', 'E', 'F']
 
 while True:
     ret, frame = cap.read()
@@ -33,19 +33,40 @@ while True:
             # Draw landmarks (finger joints)
             mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
-            # Preprocess the frame for model input
-            resized_frame = cv2.resize(frame, (28, 28))
-            gray_frame = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2GRAY)
-            normalized_frame = gray_frame / 255.0
-            preprocessed_frame = normalized_frame.reshape(1, 28, 28, 1)
+            # Get bounding box coordinates
+            x_min, y_min = frame.shape[1], frame.shape[0]
+            x_max, y_max = 0, 0
+            for landmark in hand_landmarks.landmark:
+                x, y = int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])
+                if x < x_min:
+                    x_min = x
+                if x > x_max:
+                    x_max = x
+                if y < y_min:
+                    y_min = y
+                if y > y_max:
+                    y_max = y
 
-            # Make predictions using the model
-            predictions = model.predict(preprocessed_frame)
-            predicted_label_index = np.argmax(predictions)
-            predicted_gesture_label = alphabet_labels[predicted_label_index]
+            # Draw bounding box on the hand region
+            cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
 
-            # Display the predicted gesture label on the frame
-            cv2.putText(frame, predicted_gesture_label, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+            # Crop hand region from the frame
+            hand_region = frame[y_min:y_max, x_min:x_max]
+
+            # Preprocess the hand region for model input
+            if hand_region.shape[0] > 0 and hand_region.shape[1] > 0:  # Ensure valid hand region
+                resized_hand_region = cv2.resize(hand_region, (28, 28))
+                gray_hand_region = cv2.cvtColor(resized_hand_region, cv2.COLOR_BGR2GRAY)
+                normalized_hand_region = gray_hand_region / 255.0
+                preprocessed_hand_region = normalized_hand_region.reshape(1, 28, 28, 1)
+
+                # Make predictions using the model
+                predictions = model.predict(preprocessed_hand_region)
+                predicted_label_index = np.argmax(predictions)
+                predicted_gesture_label = alphabet_labels[predicted_label_index]
+
+                # Display the predicted gesture label on the frame
+                cv2.putText(frame, predicted_gesture_label, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
 
     # Display the frame
     cv2.imshow('Hand Gesture Recognition', frame)
