@@ -1,9 +1,9 @@
 const mysql = require("mysql2");
 
 const dbPool = mysql.createPool({
-    host: 'localhost',
+    host: '34.101.193.90',
     user: 'root',
-    password: 'ayyas',
-    database: 'db_capstone',
+    password: '1234',
+    database: 'db-capstone',
 });
 module.exports = dbPool.promise();
