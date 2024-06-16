@@ -16,12 +16,12 @@ mp_drawing = mp.solutions.drawing_utils
 cap = cv2.VideoCapture(0)
 
 # Define the output directory for storing the dataset
-output_parent_dir = "dataset_coba3"
+output_parent_dir = "dataset_coba4"
 if not os.path.exists(output_parent_dir):
     os.makedirs(output_parent_dir)
 
 # Define the gesture labels
-gesture_labels = ['D']
+gesture_labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N']
 
 # Create a directory for each letter
 for label in gesture_labels:
@@ -43,8 +43,9 @@ def save_frames(frames, label, video_index, bounding_boxes):
     for frame_index, (frame, bounding_box) in enumerate(zip(frames, bounding_boxes)):
         x_min, y_min, x_max, y_max = bounding_box
         cropped_frame = frame[y_min:y_max, x_min:x_max]
+        cropped_frame_rgb = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2RGB)  # Convert to RGB
         img_name = os.path.join(output_parent_dir, label, f"{label}_video{video_index}_{frame_index}.jpg")
-        cv2.imwrite(img_name, cropped_frame)
+        cv2.imwrite(img_name, cropped_frame_rgb)  # Save as RGB image
         print(f"Saved frame {frame_index} for gesture {label} video {video_index}")
 
 # Main loop for data recording
@@ -61,7 +62,7 @@ for gesture_label in gesture_labels:
             if not ret:
                 break
 
-            # Convert the frame to RGB
+            # Convert the frame to RGB for MediaPipe processing
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
             # Detect hand landmarks using MediaPipe
