@@ -4,7 +4,7 @@ from tensorflow.keras.models import load_model
 import mediapipe as mp
 
 # Load the trained model
-model = load_model('smnist_model_augmented.h5')
+model = load_model('smnist_model_augmented_rgb.h5')
 
 # Initialize MediaPipe Hands
 mp_hands = mp.solutions.hands
@@ -15,7 +15,7 @@ mp_drawing = mp.solutions.drawing_utils
 cap = cv2.VideoCapture(0)
 
 # Define the alphabet labels
-alphabet_labels = ['A', 'B', 'C', 'D', 'E', 'F']
+alphabet_labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N']
 
 while True:
     ret, frame = cap.read()
@@ -56,9 +56,9 @@ while True:
             # Preprocess the hand region for model input
             if hand_region.shape[0] > 0 and hand_region.shape[1] > 0:  # Ensure valid hand region
                 resized_hand_region = cv2.resize(hand_region, (28, 28))
-                gray_hand_region = cv2.cvtColor(resized_hand_region, cv2.COLOR_BGR2GRAY)
-                normalized_hand_region = gray_hand_region / 255.0
-                preprocessed_hand_region = normalized_hand_region.reshape(1, 28, 28, 1)
+                rgb_hand_region = cv2.cvtColor(resized_hand_region, cv2.COLOR_BGR2RGB)  # Convert to RGB
+                normalized_hand_region = rgb_hand_region / 255.0
+                preprocessed_hand_region = normalized_hand_region.reshape(1, 28, 28, 3)  # Change to 3 channels
 
                 # Make predictions using the model
                 predictions = model.predict(preprocessed_hand_region)
