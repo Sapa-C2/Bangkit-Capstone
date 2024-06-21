@@ -1,8 +1,8 @@
 # Deploy Documentation.
 
-<h1>project<h1/>
-Name: Bangkit-Capstone
-ID: bangkit-capstone-426022
+<h1>project<h1/> <br>
+<p>Name: Bangkit-Capstone</p> <br>
+<p>ID: bangkit-capstone-426022</p>
 
 #Compute Engine
 
